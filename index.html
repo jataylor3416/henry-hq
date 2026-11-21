@@ -107,6 +107,12 @@ section{margin:26px 0}
 .ecard h4{margin:0;font-family:"Lilita One";font-weight:400;font-size:19px;line-height:1.15}
 .ecard .when{font-weight:900;color:var(--c2);font-size:14px}
 .ecard .meta{font-size:13px;color:var(--muted);font-weight:700}
+.ecard.proposed{background:repeating-linear-gradient(135deg,var(--c1) 0 9px,color-mix(in srgb,var(--c1) 30%,#fff) 9px 18px)}
+.ecard.proposed .in{background:#fffdf8}
+.vote{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.vote button{flex:1 1 auto;border:0;border-radius:10px;padding:8px 6px;font-weight:900;font-size:13px;color:#fff;white-space:nowrap}
+.vote .yes{background:#1F9D55} .vote .no{background:#C2410C} .vote .chg{background:#5a3fc0}
+.more{display:block;margin:12px auto 0;border:0;background:#e6ede8;border-radius:999px;padding:10px 18px;font-weight:900;color:var(--ink)}
 .ecard .tag{align-self:flex-start;font-size:11px;font-weight:900;border-radius:6px;padding:2px 7px;background:#fff4d6;color:#8a6200}
 .empty{grid-column:1/-1;background:#fff;border:3px dashed #cfd9d2;border-radius:18px;padding:18px;color:var(--muted);font-weight:800;display:flex;gap:14px;align-items:center}
 .empty svg{flex:none}
@@ -213,6 +219,7 @@ textarea{min-height:70px;resize:vertical}
   <section>
     <div class="sec-h"><h3>Coming up</h3><small>games, breaks &amp; holidays</small></div>
     <div class="cards" id="cards"></div>
+    <button class="more" id="moreBtn" type="button" style="display:none"></button>
   </section>
 
   <section>
@@ -231,6 +238,33 @@ textarea{min-height:70px;resize:vertical}
 </main>
 
 <footer>The schedule comes from the family's Google Calendar and refreshes every morning.<br>Tap any day on the calendar to see details.</footer>
+
+<!-- Response to a proposal -->
+<div class="modal" id="voteModal" role="dialog" aria-modal="true" aria-labelledby="voteTitle">
+  <div class="sheet">
+    <h3 id="voteTitle">Respond</h3>
+    <p id="voteSub"></p>
+    <label>I'm…</label>
+    <div class="seg" id="meSeg2"><button type="button" data-me="mom" class="mom">Mom</button><button type="button" data-me="dad" class="dad">Dad</button></div>
+    <div id="chgWrap">
+      <label for="vtFrom">Instead, how about…</label>
+      <div class="row2">
+        <div><input type="date" id="vtFrom" aria-label="New start date"></div>
+        <div><input type="date" id="vtTo" aria-label="New end date"></div>
+      </div>
+      <label for="vtWho">Henry would be with</label>
+      <select id="vtWho"><option value="">(same as proposed)</option><option value="mom">Mom</option><option value="dad">Dad</option></select>
+    </div>
+    <label for="vtNote" id="vtNoteLbl">Note (optional)</label>
+    <textarea id="vtNote" placeholder=""></textarea>
+    <div class="preview" id="vtPreview"></div>
+    <div class="btns">
+      <a class="btn sms" id="vtSms" style="text-align:center;text-decoration:none">Text it</a>
+      <a class="btn mail" id="vtMail" style="text-align:center;text-decoration:none">Email it</a>
+    </div>
+    <div class="btns"><button class="btn ghost" type="button" id="vtClose">Cancel</button></div>
+  </div>
+</div>
 
 <!-- Swap request sheet -->
 <div class="modal" id="swapModal" role="dialog" aria-modal="true" aria-labelledby="swapTitle">
@@ -335,10 +369,21 @@ function index(){
 }
 
 /* ---------- activity "types" ---------- */
+const clean = t => String(t||'').replace(/^School:\s*/i,'');
+function holidayIco(t){ const s=(t||'').toLowerCase(); return /thanksgiving/.test(s)?'🦃':/christmas/.test(s)?'🎄':/new year/.test(s)?'🎆':/easter/.test(s)?'🐣':/spring/.test(s)?'🌷':/summer/.test(s)?'☀️':'📅'; }
 function typeOf(t){
   const s = (t||'').toLowerCase();
+  if (/early dismissal/.test(s)) return {ico:'🔔', label:'Early out', c1:'#FFB020', c2:'#b87800'};
   if (/soccer|game|match|practice|tournament|scrimmage|futbol|fútbol/.test(s)) return {ico:'⚽', label:'Match', c1:'#1F7A4D', c2:'#0f3d2a'};
   if (/break|no school|holiday|vacation|out of school|teacher work/.test(s)) return {ico:'🏖️', label:'Break', c1:'#3B82F6', c2:'#1e4fa8'};
+  if (/mass\b|rosary|stations of the cross|crowning/.test(s)) return {ico:'⛪', label:'Mass', c1:'#7C5CE0', c2:'#4b33a6'};
+  if (/spirit night/.test(s)) return {ico:'🍕', label:'Spirit night', c1:'#D9467A', c2:'#9c2353'};
+  if (/picture/.test(s)) return {ico:'📸', label:'Picture day', c1:'#FFB020', c2:'#b87800'};
+  if (/parade|carnival|field day|festival|party|trivia|friends and family/.test(s)) return {ico:'🎉', label:'Fun', c1:'#D9467A', c2:'#9c2353'};
+  if (/teacher appreciation/.test(s)) return {ico:'🍎', label:'School', c1:'#FFB020', c2:'#b87800'};
+  if (/uniform/.test(s)) return {ico:'👕', label:'School', c1:'#FFB020', c2:'#b87800'};
+  if (/conference|pto|meeting/.test(s)) return {ico:'📝', label:'Parents', c1:'#3B82F6', c2:'#1e4fa8'};
+  if (/last day/.test(s)) return {ico:'🎓', label:'Last day', c1:'#1F7A4D', c2:'#0f3d2a'};
   if (/thanksgiving|christmas|easter|new year|halloween|fourth|july/.test(s)) return {ico:'🎉', label:'Holiday', c1:'#D9467A', c2:'#9c2353'};
   if (/birthday|party/.test(s)) return {ico:'🎂', label:'Party', c1:'#D9467A', c2:'#9c2353'};
   if (/doctor|dentist|ortho|checkup|appointment|therapy/.test(s)) return {ico:'🩺', label:'Checkup', c1:'#7C5CE0', c2:'#4b33a6'};
@@ -396,8 +441,9 @@ function renderStrip(){
   document.getElementById('stripRange').textContent = `${fmt(mon,{month:'short',day:'numeric'})} – ${fmt(addDays(mon,13),{month:'short',day:'numeric'})}`;
 }
 
+let showAll = false, PROPS = [];
 function renderCards(){
-  const today = iso(new Date()), horizon = iso(addDays(new Date(), 100));
+  const today = iso(new Date()), horizon = iso(addDays(new Date(), 220));
   const items = [];
   for (const b of DATA.blocks){
     if (b.special && b.e > today && b.s <= horizon){
@@ -409,9 +455,15 @@ function renderCards(){
     if (end.slice(0,10) >= today && a.s <= horizon) items.push({s:a.s, e:a.e, allDay:a.s.length===10, title:a.t, note:a.d, loc:a.loc});
   }
   items.sort((x,y) => x.s.localeCompare(y.s));
+  // proposals always show; everything else: next 6 unless "see all"
+  let shown = 0;
+  const list = items.filter(it => it.pending || showAll || (shown++ < 6));
+  PROPS = [];
   const el = document.getElementById('cards');
-  let html = items.slice(0,12).map(it => {
-    const ty = it.custody ? {ico: it.who==='mom'?'🧡':'💚', label: it.pending ? 'Proposed' : 'Holiday plan', c1: it.who==='mom'?'#F28C28':'#1F7A4D', c2: it.who==='mom'?'#C9650A':'#125236'} : typeOf(it.title);
+  let html = list.map(it => {
+    const ty = it.custody
+      ? {ico: holidayIco(it.title + ' ' + (it.note||'')), label: it.pending ? 'Proposed' : 'Holiday plan', c1: it.who==='mom'?'#F28C28':'#1F7A4D', c2: it.who==='mom'?'#C9650A':'#125236'}
+      : typeOf(it.title);
     const s = parse(it.s);
     let when;
     if (it.allDay){
@@ -421,23 +473,34 @@ function renderCards(){
       const dt = new Date(it.s);
       when = `${fmt(dt)} · ${dt.toLocaleTimeString('en-US',{hour:'numeric', minute:'2-digit'})}`;
     }
+    it.when = when;
     const multiDay = it.allDay && it.e && daysBetween(parse(it.s), parse(it.e)) > 1;
     const withWho = !it.custody && !multiDay && dayMap[it.s.slice(0,10)] ? `With ${NAME[dayMap[it.s.slice(0,10)].who]} that day` : '';
-    return `<div class="ecard" style="--c1:${ty.c1};--c2:${ty.c2}"><div class="in">
+    let vote = '';
+    if (it.pending){
+      const i = PROPS.push(it) - 1;
+      vote = `<div class="vote"><button class="yes" data-v="yes" data-i="${i}">👍 Agree</button><button class="no" data-v="no" data-i="${i}">✋ Don't agree</button><button class="chg" data-v="chg" data-i="${i}">✏️ Suggest a change</button></div>`;
+    }
+    return `<div class="ecard${it.pending ? ' proposed' : ''}" style="--c1:${ty.c1};--c2:${ty.c2}"><div class="in">
       <div class="top"><span class="type">${ty.label}</span><span class="ico">${ty.ico}</span></div>
-      <h4>${esc(it.title)}</h4>
+      <h4>${esc(clean(it.title))}</h4>
       <div class="when">${when}</div>
       ${it.loc ? `<div class="meta">📍 ${esc(it.loc)}</div>` : ''}
       ${withWho ? `<div class="meta">${withWho}</div>` : ''}
-      ${it.pending ? `<span class="tag">Not agreed yet</span>` : ''}
+      ${it.pending ? `<span class="tag">Proposed · not final yet</span>` : ''}
+      ${vote}
     </div></div>`;
   }).join('');
   if (!DATA.activities.length){
     html += `<div class="empty">${critter(56,'gold')}<div>No games or school breaks yet. Tap <b>Add a game or event</b> and save it to the <b>Henry – Activities</b> calendar. It shows up here the next morning.</div></div>`;
   }
   el.innerHTML = html || `<div class="empty">Nothing coming up.</div>`;
+  const hidden = items.length - list.length;
+  const mb = document.getElementById('moreBtn');
+  mb.style.display = (hidden > 0 || showAll) ? 'block' : 'none';
+  mb.textContent = showAll ? 'Show less' : `See all ${items.length} coming up`;
+  el.querySelectorAll('.vote button').forEach(b => b.onclick = () => openVote(PROPS[+b.dataset.i], b.dataset.v));
 }
-
 let mCursor = (() => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), 1); })();
 function renderMonth(){
   const first = mCursor, start = addDays(first, -((first.getDay()+6)%7));
@@ -456,7 +519,7 @@ function showDetail(k){
   const d = parse(k), b = dayMap[k], acts = actMap[k] || [], el = document.getElementById('detail');
   let h = `<h4>${fmt(d,{weekday:'long', month:'long', day:'numeric'})}</h4>`;
   h += b ? `<p><span class="pill ${b.who}" style="background:${b.who==='mom'?'var(--mom-soft)':'var(--dad-soft)'}">With ${NAME[b.who]}</span>${b.special ? ' ' + esc(b.title) : ''}${b.pending ? ' · <b>proposed, not agreed yet</b>' : ''}</p>${b.special && b.note ? `<p>${esc(b.note)}</p>` : ''}` : `<p>No schedule entered for this day yet.</p>`;
-  for (const a of acts){ const ty = typeOf(a.t); h += `<p>${ty.ico} <b>${esc(a.t)}</b>${a.s.length > 10 ? ' · ' + new Date(a.s).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : ''}${a.loc ? ' · ' + esc(a.loc) : ''}</p>`; }
+  for (const a of acts){ const ty = typeOf(a.t); h += `<p>${ty.ico} <b>${esc(clean(a.t))}</b>${a.s.length > 10 ? ' · ' + new Date(a.s).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : ''}${a.loc ? ' · ' + esc(a.loc) : ''}</p>`; }
   el.innerHTML = h; el.classList.add('show');
 }
 document.getElementById('prevM').onclick = () => { mCursor = new Date(mCursor.getFullYear(), mCursor.getMonth()-1, 1); renderMonth(); };
@@ -492,6 +555,48 @@ function updateSwap(){
 document.getElementById('openSwap').onclick = () => { if (me) setMe(me); updateSwap(); modal.classList.add('show'); };
 document.getElementById('swClose').onclick = () => modal.classList.remove('show');
 modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('show'); });
+
+/* ---------- respond to a proposal ---------- */
+const vModal = document.getElementById('voteModal');
+let vItem = null, vKind = 'yes';
+document.querySelectorAll('#meSeg2 button').forEach(b => b.onclick = () => { setMe(b.dataset.me); syncMe2(); updateVote(); });
+function syncMe2(){ document.querySelectorAll('#meSeg2 button').forEach(b => b.classList.toggle('on', b.dataset.me === me)); }
+function openVote(it, kind){
+  vItem = it; vKind = kind;
+  const head = {yes:'👍 Agree', no:"✋ Don't agree", chg:'✏️ Suggest a change'}[kind];
+  document.getElementById('voteTitle').textContent = head;
+  document.getElementById('voteSub').textContent = `${clean(it.title)} · ${it.when}`;
+  document.getElementById('chgWrap').style.display = kind === 'chg' ? 'block' : 'none';
+  document.getElementById('vtNoteLbl').textContent = kind === 'no' ? 'Why not? (optional)' : kind === 'chg' ? 'Anything else?' : 'Note (optional)';
+  document.getElementById('vtNote').value = '';
+  if (kind === 'chg'){
+    document.getElementById('vtFrom').value = it.s.slice(0,10);
+    document.getElementById('vtTo').value = iso(addDays(parse(it.e), -1));
+    document.getElementById('vtWho').value = '';
+  }
+  syncMe2(); updateVote(); vModal.classList.add('show');
+}
+function updateVote(){
+  if (!vItem) return;
+  const note = document.getElementById('vtNote').value.trim();
+  const what = `${clean(vItem.title)} (${vItem.when})`;
+  let body;
+  if (vKind === 'yes') body = `I agree to: ${what}.`;
+  else if (vKind === 'no') body = `I don't agree to: ${what}.`;
+  else {
+    const f = document.getElementById('vtFrom').value, t = document.getElementById('vtTo').value || f, w = document.getElementById('vtWho').value;
+    const range = f ? (t !== f ? `${fmt(parse(f))} – ${fmt(parse(t))}` : fmt(parse(f))) : '[pick dates]';
+    body = `About: ${what}\nCounter-proposal: ${range}${w ? `, Henry with ${NAME[w]}` : ''}.`;
+  }
+  const msg = `Henry HQ${me ? ' · from ' + NAME[me] : ''}\n${body}${note ? '\n' + note : ''}${vKind === 'yes' ? '\n\nOnce we both agree, it gets marked final on the calendar.' : '\n\nLet me know what you think.'}`;
+  document.getElementById('vtPreview').textContent = msg;
+  document.getElementById('vtSms').href = 'sms:?&body=' + encodeURIComponent(msg);
+  document.getElementById('vtMail').href = 'mailto:?subject=' + encodeURIComponent('Henry schedule: ' + clean(vItem.title)) + '&body=' + encodeURIComponent(msg);
+}
+['vtFrom','vtTo','vtWho','vtNote'].forEach(id => document.getElementById(id).addEventListener('input', updateVote));
+document.getElementById('vtClose').onclick = () => vModal.classList.remove('show');
+vModal.addEventListener('click', e => { if (e.target === vModal) vModal.classList.remove('show'); });
+document.getElementById('moreBtn').onclick = () => { showAll = !showAll; renderCards(); };
 
 /* ---------- lock / unlock ---------- */
 const lock = document.getElementById('lock');
