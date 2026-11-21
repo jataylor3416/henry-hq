@@ -212,7 +212,7 @@ textarea{min-height:70px;resize:vertical}
   <section>
     <div class="actions">
       <button class="act swap" id="openSwap" type="button"><span class="big">🔁</span><span><b>Request a swap</b><small>Sends a text or email to the other parent</small></span></button>
-      <a class="act add" id="addEvent" target="_blank" rel="noopener"><span class="big">➕</span><span><b>Add a game or event</b><small>Opens Google Calendar. Save it to "Henry – Activities"</small></span></a>
+      <a class="act add" id="addEvent" target="_blank" rel="noopener"><span class="big">➕</span><span><b>Add a game or event</b><small>Opens Google Calendar. Switch the calendar to <b>Henry</b> before you save</small></span></a>
     </div>
   </section>
 
@@ -492,7 +492,7 @@ function renderCards(){
     </div></div>`;
   }).join('');
   if (!DATA.activities.length){
-    html += `<div class="empty">${critter(56,'gold')}<div>No games or school breaks yet. Tap <b>Add a game or event</b> and save it to the <b>Henry – Activities</b> calendar. It shows up here the next morning.</div></div>`;
+    html += `<div class="empty">${critter(56,'gold')}<div>No games or school breaks yet. Tap <b>Add a game or event</b> and save it to the <b>Henry</b> calendar.</div></div>`;
   }
   el.innerHTML = html || `<div class="empty">Nothing coming up.</div>`;
   const hidden = items.length - list.length;
