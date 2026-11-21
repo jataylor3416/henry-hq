@@ -137,6 +137,7 @@ textarea{min-height:70px;resize:vertical}
 .seg button.on.mom{background:var(--mom);border-color:var(--mom);color:#fff}
 .seg button.on.dad{background:var(--dad);border-color:var(--dad);color:#fff}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row2>div{min-width:0} input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;min-height:46px}
 .btns{display:flex;gap:10px;margin-top:16px}
 .btn{flex:1;border:0;border-radius:14px;padding:13px;font-weight:900;color:#fff;background:var(--ink)}
 .btn.ghost{background:#edf2ee;color:var(--ink)}
@@ -360,7 +361,7 @@ function renderToday(){
   if (next){
     const prev = dayMap[iso(addDays(next.d,-1))];
     const m = prev && /picks up (\w+) (night|evening|after school|afternoon)/i.exec(prev.title);
-    if (m) next.label = `${fmt(addDays(next.d,-1))} ${m[2].toLowerCase()}`;
+    if (m){ const d0 = addDays(next.d,-1); next.label = `${DOW[d0.getDay()]} ${m[2].toLowerCase()}, ${fmt(d0,{month:'short',day:'numeric'})}`; }
   }
   const nd = next ? daysBetween(now, next.label ? addDays(next.d,-1) : next.d) : null;
   const when = nd === 0 ? 'today' : nd === 1 ? 'tomorrow' : `in ${nd} days`;
@@ -420,7 +421,8 @@ function renderCards(){
       const dt = new Date(it.s);
       when = `${fmt(dt)} · ${dt.toLocaleTimeString('en-US',{hour:'numeric', minute:'2-digit'})}`;
     }
-    const withWho = !it.custody && dayMap[it.s.slice(0,10)] ? `With ${NAME[dayMap[it.s.slice(0,10)].who]} that day` : '';
+    const multiDay = it.allDay && it.e && daysBetween(parse(it.s), parse(it.e)) > 1;
+    const withWho = !it.custody && !multiDay && dayMap[it.s.slice(0,10)] ? `With ${NAME[dayMap[it.s.slice(0,10)].who]} that day` : '';
     return `<div class="ecard" style="--c1:${ty.c1};--c2:${ty.c2}"><div class="in">
       <div class="top"><span class="type">${ty.label}</span><span class="ico">${ty.ico}</span></div>
       <h4>${esc(it.title)}</h4>
