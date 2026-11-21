@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f3d2a">
+<title>Henry HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='white' stroke='%23122' stroke-width='6'/%3E%3Cpath d='M50 30l14 10-5 17H41l-5-17z' fill='%23122'/%3E%3C/svg%3E">
+<style>
+:root{
+  --mom:#F28C28; --mom-deep:#C9650A; --mom-soft:#FFE7CF;
+  --dad:#1F7A4D; --dad-deep:#125236; --dad-soft:#D5EFE0;
+  --pitch:#0f3d2a; --pitch2:#145238; --line:rgba(255,255,255,.14);
+  --ink:#14202b; --muted:#5d6b78; --card:#ffffff; --bg:#f3f6f2;
+  --gold:#FFCB2E; --sky:#3B82F6; --berry:#D9467A; --violet:#7C5CE0;
+  --r:22px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+h1,h2,h3,.disp{font-family:"Lilita One",Nunito,sans-serif;font-weight:400;letter-spacing:.3px;margin:0}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+
+/* ---------- pitch header ---------- */
+.pitch{background:
+  repeating-linear-gradient(90deg,var(--pitch) 0 70px,var(--pitch2) 70px 140px);
+  color:#fff;position:relative;overflow:hidden;padding:18px 0 90px}
+.pitch:before{content:"";position:absolute;left:50%;top:-60px;width:260px;height:260px;border:3px solid var(--line);border-radius:50%;transform:translateX(-50%)}
+.pitch:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:3px solid var(--line)}
+.topbar{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{font-size:30px;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+.brand h1 span{color:var(--gold)}
+.updated{font-size:12px;opacity:.75;font-weight:700;text-align:right}
+.lockbtn{background:rgba(255,255,255,.12);border:0;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;margin-top:4px}
+
+/* ---------- today hero ---------- */
+.hero{margin-top:-70px;position:relative;z-index:2}
+.today{border-radius:28px;padding:22px;color:#fff;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+  box-shadow:0 14px 30px rgba(15,61,42,.25);border:4px solid rgba(255,255,255,.9);position:relative;overflow:hidden}
+.today.mom{background:linear-gradient(135deg,var(--mom),var(--mom-deep))}
+.today.dad{background:linear-gradient(135deg,#2a9762,var(--dad-deep))}
+.today:after{content:"";position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.1)}
+.kicker{font-weight:900;text-transform:uppercase;letter-spacing:1.5px;font-size:12px;opacity:.9}
+.today h2{font-size:clamp(34px,8vw,56px);line-height:1;margin:6px 0 10px;text-shadow:0 3px 0 rgba(0,0,0,.18)}
+.handoff{background:rgba(255,255,255,.18);border-radius:16px;padding:10px 14px;display:inline-flex;gap:10px;align-items:center;font-weight:800;flex-wrap:wrap}
+.handoff b{font-family:"Lilita One";font-weight:400;font-size:20px}
+.pill{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:900;background:#fff}
+.pill.mom{color:var(--mom-deep)} .pill.dad{color:var(--dad)}
+.hero-critter{width:130px;height:130px;position:relative;z-index:1;animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
+.today .note{margin-top:10px;font-size:14px;font-weight:700;opacity:.95}
+
+/* ---------- sections ---------- */
+section{margin:26px 0}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;gap:10px}
+.sec-h h3{font-size:24px}
+.sec-h small{color:var(--muted);font-weight:800}
+
+/* week strip */
+.strip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day{border-radius:16px;padding:10px 4px 9px;text-align:center;color:#fff;position:relative;min-height:84px}
+.day.mom{background:var(--mom)} .day.dad{background:var(--dad)}
+.day.none{background:#cfd6d2}
+.day.pending{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.22) 0 8px,transparent 8px 16px)}
+.day .dow{font-size:11px;font-weight:900;text-transform:uppercase;opacity:.9}
+.day .num{font-family:"Lilita One";font-size:26px;line-height:1.1}
+.day .who{font-size:11px;font-weight:900}
+.day.is-today{outline:4px solid var(--gold);outline-offset:2px}
+.day .dots{position:absolute;top:6px;right:6px;display:flex;gap:2px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.08)}
+
+/* month */
+.month{background:var(--card);border-radius:var(--r);padding:14px;box-shadow:0 4px 0 #e2e8e3}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mhead h3{font-size:22px}
+.navbtn{width:40px;height:40px;border-radius:12px;border:0;background:#edf2ee;font-size:20px;font-weight:900;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.grid .h{font-size:11px;font-weight:900;color:var(--muted);text-align:center;text-transform:uppercase;padding:2px 0 4px}
+.cell{aspect-ratio:1/1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff;position:relative;border:0;padding:0}
+.cell.mom{background:var(--mom)} .cell.dad{background:var(--dad)} .cell.none{background:#e9eeea;color:#9aa6a0}
+.cell.out{opacity:.28}
+.cell.pending{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.28) 0 6px,transparent 6px 12px)}
+.cell.is-today{outline:3px solid var(--gold);outline-offset:1px}
+.cell .dot{position:absolute;bottom:5px;width:6px;height:6px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:13px;font-weight:800;color:var(--muted)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
+
+/* day detail */
+.detail{margin-top:12px;border-radius:14px;background:#f4f7f4;padding:12px 14px;font-weight:700;display:none}
+.detail.show{display:block}
+.detail h4{margin:0 0 4px;font-family:"Lilita One";font-weight:400;font-size:18px}
+.detail p{margin:4px 0;color:#33424f;font-size:14px}
+
+/* event cards (collectible style) */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.ecard{border-radius:18px;padding:5px;background:linear-gradient(145deg,var(--c1),var(--c2));box-shadow:0 6px 14px rgba(0,0,0,.08)}
+.ecard .in{background:#fff;border-radius:14px;padding:12px;height:100%;display:flex;flex-direction:column;gap:6px}
+.ecard .top{display:flex;justify-content:space-between;align-items:center}
+.type{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff;background:var(--c1);border-radius:999px;padding:3px 9px}
+.ecard .ico{font-size:26px;line-height:1}
+.ecard h4{margin:0;font-family:"Lilita One";font-weight:400;font-size:19px;line-height:1.15}
+.ecard .when{font-weight:900;color:var(--c2);font-size:14px}
+.ecard .meta{font-size:13px;color:var(--muted);font-weight:700}
+.ecard .tag{align-self:flex-start;font-size:11px;font-weight:900;border-radius:6px;padding:2px 7px;background:#fff4d6;color:#8a6200}
+.empty{background:#fff;border:3px dashed #cfd9d2;border-radius:18px;padding:18px;color:var(--muted);font-weight:800;display:flex;gap:14px;align-items:center}
+.empty svg{flex:none}
+
+/* actions */
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.act{border:0;border-radius:20px;padding:16px;text-align:left;color:#fff;display:flex;gap:12px;align-items:center;box-shadow:0 5px 0 rgba(0,0,0,.18);text-decoration:none;transition:transform .1s}
+.act:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.act .big{font-size:30px}
+.act b{font-family:"Lilita One";font-weight:400;font-size:20px;display:block}
+.act small{font-weight:700;opacity:.9}
+.act.swap{background:linear-gradient(135deg,var(--violet),#5a3fc0)}
+.act.add{background:linear-gradient(135deg,var(--sky),#2563c9)}
+
+footer{padding:26px 0 40px;color:var(--muted);font-size:13px;font-weight:700;text-align:center}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,25,18,.55);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:16px}
+.modal.show{display:flex}
+.sheet{background:#fff;border-radius:24px;max-width:480px;width:100%;padding:20px;max-height:90vh;overflow:auto}
+.sheet h3{font-size:24px;margin-bottom:4px}
+.sheet p{margin:0 0 12px;color:var(--muted);font-weight:700;font-size:14px}
+label{display:block;font-weight:900;font-size:13px;margin:12px 0 5px}
+input,select,textarea{width:100%;font:inherit;font-weight:700;border:2px solid #dbe3dd;border-radius:12px;padding:10px 12px;background:#fafcfa;color:var(--ink)}
+textarea{min-height:70px;resize:vertical}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;border:2px solid #dbe3dd;background:#fafcfa;border-radius:12px;padding:10px;font-weight:900}
+.seg button.on.mom{background:var(--mom);border-color:var(--mom);color:#fff}
+.seg button.on.dad{background:var(--dad);border-color:var(--dad);color:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;border:0;border-radius:14px;padding:13px;font-weight:900;color:#fff;background:var(--ink)}
+.btn.ghost{background:#edf2ee;color:var(--ink)}
+.btn.sms{background:var(--dad)} .btn.mail{background:var(--sky)}
+.preview{background:#f4f7f4;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:700;white-space:pre-wrap;color:#33424f;margin-top:12px}
+
+/* ---------- lock screen ---------- */
+.lock{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;
+  background:repeating-linear-gradient(90deg,var(--pitch) 0 70px,var(--pitch2) 70px 140px)}
+.lock.hide{display:none}
+.lockcard{background:#fff;border-radius:28px;padding:26px 22px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.3)}
+.lockcard h1{font-size:34px;margin:6px 0 2px}
+.lockcard h1 span{color:var(--mom)}
+.lockcard p{color:var(--muted);font-weight:700;margin:0 0 16px}
+.lockcard input{text-align:center;font-size:20px;letter-spacing:2px}
+.lockcard .btn{width:100%;margin-top:12px;background:var(--dad);font-size:17px}
+.err{color:#c0392b;font-weight:900;min-height:22px;margin-top:8px;font-size:14px}
+.remember{display:flex;gap:8px;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--muted);margin-top:10px}
+.remember input{width:auto}
+
+@media (max-width:620px){
+  .today{grid-template-columns:1fr;padding:20px}
+  .hero-critter{position:absolute;right:10px;top:10px;width:84px;height:84px}
+  .today h2{padding-right:70px}
+  .actions{grid-template-columns:1fr}
+  .strip{gap:5px}
+  .day{border-radius:12px;min-height:74px}
+  .day .num{font-size:22px}
+  .day .who{font-size:10px}
+  .cell{font-size:13px;border-radius:8px}
+}
+@media (prefers-reduced-motion:reduce){.hero-critter{animation:none}}
+</style>
+</head>
+<body>
+
+<!-- Lock screen -->
+<div class="lock" id="lock">
+  <form class="lockcard" id="lockForm" autocomplete="off">
+    <div id="lockCritter"></div>
+    <h1>Henry <span>HQ</span></h1>
+    <p>Enter the family code to see the schedule.</p>
+    <input id="pin" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Family code" aria-label="Family code">
+    <label class="remember"><input type="checkbox" id="remember" checked> Remember on this device</label>
+    <button class="btn" type="submit" id="unlockBtn">Kick off ⚽</button>
+    <div class="err" id="err"></div>
+  </form>
+</div>
+
+<header class="pitch">
+  <div class="wrap topbar">
+    <div class="brand"><div id="brandCritter"></div><h1>Henry <span>HQ</span></h1></div>
+    <div class="updated"><div id="updated"></div><button class="lockbtn" id="lockBtn" type="button">Lock 🔒</button></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero"><div class="today" id="today"></div></div>
+
+  <section>
+    <div class="sec-h"><h3>Next two weeks</h3><small id="stripRange"></small></div>
+    <div class="strip" id="strip1"></div>
+    <div class="strip" id="strip2" style="margin-top:8px"></div>
+  </section>
+
+  <section>
+    <div class="actions">
+      <button class="act swap" id="openSwap" type="button"><span class="big">🔁</span><span><b>Request a swap</b><small>Sends a text or email to the other parent</small></span></button>
+      <a class="act add" id="addEvent" target="_blank" rel="noopener"><span class="big">➕</span><span><b>Add a game or event</b><small>Opens Google Calendar. Save it to "Henry – Activities"</small></span></a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h3>Coming up</h3><small>games, breaks &amp; holidays</small></div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section>
+    <div class="month">
+      <div class="mhead"><button class="navbtn" id="prevM" type="button" aria-label="Previous month">‹</button><h3 id="mTitle"></h3><button class="navbtn" id="nextM" type="button" aria-label="Next month">›</button></div>
+      <div class="grid" id="mGrid"></div>
+      <div class="detail" id="detail"></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--mom)"></i>Mom</span>
+        <span><i class="sw" style="background:var(--dad)"></i>Dad</span>
+        <span><i class="sw" style="background:#999;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.5) 0 3px,transparent 3px 6px)"></i>Proposed, not agreed yet</span>
+        <span><i class="sw" style="background:var(--gold);border-radius:50%"></i>Event</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>The schedule comes from the family's Google Calendar and refreshes every morning.<br>Tap any day on the calendar to see details.</footer>
+
+<!-- Swap request sheet -->
+<div class="modal" id="swapModal" role="dialog" aria-modal="true" aria-labelledby="swapTitle">
+  <div class="sheet">
+    <h3 id="swapTitle">Request a swap 🔁</h3>
+    <p>Fill this in and send it. Once you both say yes, the calendar gets updated.</p>
+    <label>I'm…</label>
+    <div class="seg" id="meSeg"><button type="button" data-me="mom" class="mom">Mom</button><button type="button" data-me="dad" class="dad">Dad</button></div>
+    <div class="row2">
+      <div><label for="swFrom">From</label><input type="date" id="swFrom"></div>
+      <div><label for="swTo">Through</label><input type="date" id="swTo"></div>
+    </div>
+    <label for="swWhat">What's the ask?</label>
+    <select id="swWhat">
+      <option value="trade">Trade days</option>
+      <option value="keep">Can Henry stay with me?</option>
+      <option value="take">Can you take Henry?</option>
+      <option value="time">Change pickup / drop-off time</option>
+    </select>
+    <label for="swWhy">Details (optional)</label>
+    <textarea id="swWhy" placeholder="e.g. Tournament out of town, I can give you the next weekend back"></textarea>
+    <div class="preview" id="swPreview"></div>
+    <div class="btns">
+      <a class="btn sms" id="swSms" style="text-align:center;text-decoration:none">Text it</a>
+      <a class="btn mail" id="swMail" style="text-align:center;text-decoration:none">Email it</a>
+    </div>
+    <div class="btns"><button class="btn ghost" type="button" id="swClose">Cancel</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+/* ---------- mascot: an original soccer-ball critter ---------- */
+function critter(size, jersey){
+  const j = jersey === 'dad' ? '#1F7A4D' : jersey === 'mom' ? '#F28C28' : '#FFCB2E';
+  return `<svg width="${size}" height="${size}" viewBox="0 0 120 120" aria-hidden="true">
+  <ellipse cx="60" cy="112" rx="30" ry="5" fill="rgba(0,0,0,.18)"/>
+  <path d="M38 96 l-6 12 h14z M82 96 l6 12 h-14z" fill="#14202b"/>
+  <circle cx="60" cy="60" r="44" fill="#fff" stroke="#14202b" stroke-width="5"/>
+  <path d="M60 22 l13 9 -5 15 h-16 l-5 -15z" fill="#14202b"/>
+  <path d="M21 55 l10 -6 9 9 -4 13 -12 2z" fill="#14202b"/>
+  <path d="M99 55 l-10 -6 -9 9 4 13 12 2z" fill="#14202b"/>
+  <path d="M44 94 l4 -12 h24 l4 12 a44 44 0 0 1 -32 0z" fill="#14202b"/>
+  <path d="M18 44 q42 -26 84 0" fill="none" stroke="${j}" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="47" cy="66" rx="8" ry="10" fill="#14202b"/><ellipse cx="73" cy="66" rx="8" ry="10" fill="#14202b"/>
+  <circle cx="50" cy="62" r="3" fill="#fff"/><circle cx="76" cy="62" r="3" fill="#fff"/>
+  <path d="M52 80 q8 7 16 0" fill="none" stroke="#14202b" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="36" cy="78" r="5" fill="#FF9AA2" opacity=".8"/><circle cx="84" cy="78" r="5" fill="#FF9AA2" opacity=".8"/>
+  <path d="M12 74 l-9 -6 M14 84 l-10 0" stroke="#14202b" stroke-width="4" stroke-linecap="round"/>
+  <path d="M108 74 l9 -6 M106 84 l10 0" stroke="#14202b" stroke-width="4" stroke-linecap="round"/>
+  </svg>`;
+}
+document.getElementById('lockCritter').innerHTML = critter(96);
+document.getElementById('brandCritter').innerHTML = critter(44);
+
+/* ---------- storage helpers (may be unavailable) ---------- */
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){} },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} }
+};
+
+/* ---------- decrypt ---------- */
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+let ENC = null;
+async function loadEnc(){
+  if (ENC) return ENC;
+  const r = await fetch('data.enc.json?t=' + Date.now(), {cache:'no-store'});
+  ENC = await r.json(); return ENC;
+}
+async function decrypt(pin){
+  const enc = await loadEnc();
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin.trim().toLowerCase()), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64(enc.salt), iterations:enc.iter, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+  const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(enc.iv)}, key, b64(enc.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+/* ---------- dates ---------- */
+const pad = n => String(n).padStart(2,'0');
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse = s => { const [y,m,d] = s.slice(0,10).split('-').map(Number); return new Date(y, m-1, d); };
+const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const fmt = (d, o) => d.toLocaleDateString('en-US', o || {weekday:'short', month:'short', day:'numeric'});
+const daysBetween = (a,b) => Math.round((parse(iso(b)) - parse(iso(a))) / 864e5);
+const NAME = {mom:'Mom', dad:'Dad'};
+
+let DATA, dayMap = {}, actMap = {};
+
+function index(){
+  dayMap = {}; actMap = {};
+  for (const b of DATA.blocks){
+    for (let d = parse(b.s); iso(d) < b.e; d = addDays(d,1)) dayMap[iso(d)] = b;
+  }
+  for (const a of DATA.activities){
+    const s = parse(a.s), e = a.e ? parse(a.e) : s;
+    const allDay = a.s.length === 10;
+    const last = allDay && a.e ? addDays(e,-1) : e;
+    for (let d = s; iso(d) <= iso(last); d = addDays(d,1)) (actMap[iso(d)] ||= []).push(a);
+  }
+}
+
+/* ---------- activity "types" ---------- */
+function typeOf(t){
+  const s = (t||'').toLowerCase();
+  if (/soccer|game|match|practice|tournament|scrimmage|futbol|fútbol/.test(s)) return {ico:'⚽', label:'Match', c1:'#1F7A4D', c2:'#0f3d2a'};
+  if (/break|no school|holiday|vacation|out of school|teacher work/.test(s)) return {ico:'🏖️', label:'Break', c1:'#3B82F6', c2:'#1e4fa8'};
+  if (/thanksgiving|christmas|easter|new year|halloween|fourth|july/.test(s)) return {ico:'🎉', label:'Holiday', c1:'#D9467A', c2:'#9c2353'};
+  if (/birthday|party/.test(s)) return {ico:'🎂', label:'Party', c1:'#D9467A', c2:'#9c2353'};
+  if (/doctor|dentist|ortho|checkup|appointment|therapy/.test(s)) return {ico:'🩺', label:'Checkup', c1:'#7C5CE0', c2:'#4b33a6'};
+  if (/school|class|conference|recital|concert|play|field trip|picture/.test(s)) return {ico:'📚', label:'School', c1:'#FFB020', c2:'#b87800'};
+  return {ico:'⭐', label:'Event', c1:'#7C5CE0', c2:'#4b33a6'};
+}
+
+/* ---------- render ---------- */
+function renderToday(){
+  const now = new Date(), t = iso(now), b = dayMap[t], el = document.getElementById('today');
+  if (!b){ el.className = 'today dad'; el.innerHTML = `<div><div class="kicker">Today</div><h2>No schedule yet</h2></div>`; return; }
+  // next handoff = first future day whose owner differs
+  let next = null;
+  for (let i = 1; i < 120; i++){
+    const d = addDays(now, i), nb = dayMap[iso(d)];
+    if (!nb) break;
+    if (nb.who !== b.who){ next = {d, b:nb}; break; }
+  }
+  const nd = next ? daysBetween(now, next.d) : null;
+  const when = nd === 1 ? 'tomorrow' : `in ${nd} days`;
+  const special = b.special ? `<div class="note">📌 ${esc(b.title)}${b.pending ? ' · <b>proposed, not agreed yet</b>' : ''}</div>` : '';
+  const nextNote = next && next.b.special ? ` · ${esc(next.b.title)}${next.b.pending?' (proposed)':''}` : '';
+  el.className = 'today ' + b.who;
+  el.innerHTML = `<div>
+      <div class="kicker">${fmt(now,{weekday:'long', month:'long', day:'numeric'})}</div>
+      <h2>Henry is with ${NAME[b.who]}</h2>
+      ${next ? `<div class="handoff">Next switch: <b>${fmt(next.d)}</b> <span class="pill ${next.b.who}">→ ${NAME[next.b.who]}</span> <span>${when}${nextNote}</span></div>` : ''}
+      ${special}
+    </div>
+    <div class="hero-critter">${critter('100%', b.who)}</div>`;
+}
+
+function dayCell(d){
+  const k = iso(d), b = dayMap[k], acts = actMap[k] || [];
+  const cls = ['day', b ? b.who : 'none', b && b.pending ? 'pending' : '', k === iso(new Date()) ? 'is-today' : ''].join(' ');
+  return `<div class="${cls}" title="${b ? esc(b.title) : ''}">
+    ${acts.length ? `<div class="dots">${acts.slice(0,3).map(()=>'<i class="dot"></i>').join('')}</div>` : ''}
+    <div class="dow">${DOW[d.getDay()]}</div><div class="num">${d.getDate()}</div><div class="who">${b ? NAME[b.who] : '–'}</div></div>`;
+}
+function renderStrip(){
+  const now = new Date();
+  // start strips on the Monday of this week so they line up with the 2-2-3 rhythm
+  const mon = addDays(now, -((now.getDay()+6)%7));
+  let a = '', c = '';
+  for (let i = 0; i < 7; i++) a += dayCell(addDays(mon,i));
+  for (let i = 7; i < 14; i++) c += dayCell(addDays(mon,i));
+  document.getElementById('strip1').innerHTML = a;
+  document.getElementById('strip2').innerHTML = c;
+  document.getElementById('stripRange').textContent = `${fmt(mon,{month:'short',day:'numeric'})} – ${fmt(addDays(mon,13),{month:'short',day:'numeric'})}`;
+}
+
+function renderCards(){
+  const today = iso(new Date()), horizon = iso(addDays(new Date(), 100));
+  const items = [];
+  for (const b of DATA.blocks){
+    if (b.special && b.e > today && b.s <= horizon){
+      items.push({s:b.s, e:b.e, allDay:true, title:b.title, note:b.note, pending:b.pending, who:b.who, custody:true});
+    }
+  }
+  for (const a of DATA.activities){
+    const end = a.e || a.s;
+    if (end.slice(0,10) >= today && a.s <= horizon) items.push({s:a.s, e:a.e, allDay:a.s.length===10, title:a.t, note:a.d, loc:a.loc});
+  }
+  items.sort((x,y) => x.s.localeCompare(y.s));
+  const el = document.getElementById('cards');
+  let html = items.slice(0,12).map(it => {
+    const ty = it.custody ? {ico: it.who==='mom'?'🧡':'💚', label: it.pending ? 'Proposed' : 'Holiday plan', c1: it.who==='mom'?'#F28C28':'#1F7A4D', c2: it.who==='mom'?'#C9650A':'#125236'} : typeOf(it.title);
+    const s = parse(it.s);
+    let when;
+    if (it.allDay){
+      const last = it.e ? addDays(parse(it.e), -1) : s;
+      when = iso(last) === iso(s) ? fmt(s) : `${fmt(s)} – ${fmt(last)}`;
+    } else {
+      const dt = new Date(it.s);
+      when = `${fmt(dt)} · ${dt.toLocaleTimeString('en-US',{hour:'numeric', minute:'2-digit'})}`;
+    }
+    const withWho = !it.custody && dayMap[it.s.slice(0,10)] ? `With ${NAME[dayMap[it.s.slice(0,10)].who]} that day` : '';
+    return `<div class="ecard" style="--c1:${ty.c1};--c2:${ty.c2}"><div class="in">
+      <div class="top"><span class="type">${ty.label}</span><span class="ico">${ty.ico}</span></div>
+      <h4>${esc(it.title)}</h4>
+      <div class="when">${when}</div>
+      ${it.loc ? `<div class="meta">📍 ${esc(it.loc)}</div>` : ''}
+      ${withWho ? `<div class="meta">${withWho}</div>` : ''}
+      ${it.pending ? `<span class="tag">Not agreed yet</span>` : ''}
+    </div></div>`;
+  }).join('');
+  if (!DATA.activities.length){
+    html += `<div class="empty">${critter(56,'gold')}<div>No games or school breaks yet. Tap <b>Add a game or event</b> and save it to the <b>Henry – Activities</b> calendar. It shows up here the next morning.</div></div>`;
+  }
+  el.innerHTML = html || `<div class="empty">Nothing coming up.</div>`;
+}
+
+let mCursor = (() => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), 1); })();
+function renderMonth(){
+  const first = mCursor, start = addDays(first, -((first.getDay()+6)%7));
+  document.getElementById('mTitle').textContent = first.toLocaleDateString('en-US',{month:'long', year:'numeric'});
+  let h = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x => `<div class="h">${x}</div>`).join('');
+  for (let i = 0; i < 42; i++){
+    const d = addDays(start, i), k = iso(d), b = dayMap[k], acts = actMap[k] || [];
+    if (i >= 35 && d.getMonth() !== first.getMonth()) break;
+    const cls = ['cell', b ? b.who : 'none', b && b.pending ? 'pending' : '', d.getMonth() !== first.getMonth() ? 'out' : '', k === iso(new Date()) ? 'is-today' : ''].join(' ');
+    h += `<button type="button" class="${cls}" data-k="${k}" aria-label="${fmt(d)}: ${b ? 'with ' + NAME[b.who] : 'no schedule'}">${d.getDate()}${acts.length ? '<i class="dot"></i>' : ''}</button>`;
+  }
+  const g = document.getElementById('mGrid'); g.innerHTML = h;
+  g.querySelectorAll('.cell').forEach(c => c.addEventListener('click', () => showDetail(c.dataset.k)));
+}
+function showDetail(k){
+  const d = parse(k), b = dayMap[k], acts = actMap[k] || [], el = document.getElementById('detail');
+  let h = `<h4>${fmt(d,{weekday:'long', month:'long', day:'numeric'})}</h4>`;
+  h += b ? `<p><span class="pill ${b.who}" style="background:${b.who==='mom'?'var(--mom-soft)':'var(--dad-soft)'}">With ${NAME[b.who]}</span>${b.special ? ' ' + esc(b.title) : ''}${b.pending ? ' · <b>proposed, not agreed yet</b>' : ''}</p>${b.special && b.note ? `<p>${esc(b.note)}</p>` : ''}` : `<p>No schedule entered for this day yet.</p>`;
+  for (const a of acts){ const ty = typeOf(a.t); h += `<p>${ty.ico} <b>${esc(a.t)}</b>${a.s.length > 10 ? ' · ' + new Date(a.s).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : ''}${a.loc ? ' · ' + esc(a.loc) : ''}</p>`; }
+  el.innerHTML = h; el.classList.add('show');
+}
+document.getElementById('prevM').onclick = () => { mCursor = new Date(mCursor.getFullYear(), mCursor.getMonth()-1, 1); renderMonth(); };
+document.getElementById('nextM').onclick = () => { mCursor = new Date(mCursor.getFullYear(), mCursor.getMonth()+1, 1); renderMonth(); };
+
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- add event link ---------- */
+document.getElementById('addEvent').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Henry: ') + '&details=' + encodeURIComponent('Added from Henry HQ');
+
+/* ---------- swap request ---------- */
+const modal = document.getElementById('swapModal');
+let me = store.get('hq-me') || '';
+function setMe(v){ me = v; store.set('hq-me', v); document.querySelectorAll('#meSeg button').forEach(b => b.classList.toggle('on', b.dataset.me === v)); updateSwap(); }
+document.querySelectorAll('#meSeg button').forEach(b => b.onclick = () => setMe(b.dataset.me));
+function updateSwap(){
+  const f = document.getElementById('swFrom').value, t = document.getElementById('swTo').value || f;
+  const what = document.getElementById('swWhat'), why = document.getElementById('swWhy').value.trim();
+  const range = f ? (t && t !== f ? `${fmt(parse(f))} – ${fmt(parse(t))}` : fmt(parse(f))) : '[pick a date]';
+  const whose = f && dayMap[f] ? ` (currently ${NAME[dayMap[f].who]}'s day${t && t!==f ? 's' : ''})` : '';
+  const asks = {
+    trade: `Could we trade days for ${range}${whose}?`,
+    keep: `Could Henry stay with me ${range}${whose}?`,
+    take: `Could you take Henry ${range}${whose}?`,
+    time: `Could we change the pickup/drop-off time on ${range}?`
+  };
+  const msg = `Henry HQ swap request${me ? ' from ' + NAME[me] : ''}:\n${asks[what.value]}${why ? '\n' + why : ''}\n\nLet me know yes or no. Once we agree, the calendar gets updated.`;
+  document.getElementById('swPreview').textContent = msg;
+  document.getElementById('swSms').href = 'sms:?&body=' + encodeURIComponent(msg);
+  document.getElementById('swMail').href = 'mailto:?subject=' + encodeURIComponent('Henry swap request: ' + range) + '&body=' + encodeURIComponent(msg);
+}
+['swFrom','swTo','swWhat','swWhy'].forEach(id => document.getElementById(id).addEventListener('input', updateSwap));
+document.getElementById('openSwap').onclick = () => { if (me) setMe(me); updateSwap(); modal.classList.add('show'); };
+document.getElementById('swClose').onclick = () => modal.classList.remove('show');
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('show'); });
+
+/* ---------- lock / unlock ---------- */
+const lock = document.getElementById('lock');
+function show(data){
+  DATA = data; index();
+  const u = new Date(DATA.updated);
+  document.getElementById('updated').textContent = 'Updated ' + u.toLocaleDateString('en-US',{month:'short', day:'numeric'}) + ', ' + u.toLocaleTimeString('en-US',{hour:'numeric', minute:'2-digit'});
+  renderToday(); renderStrip(); renderCards(); renderMonth();
+  lock.classList.add('hide');
+}
+document.getElementById('lockForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const pin = document.getElementById('pin').value, err = document.getElementById('err'), btn = document.getElementById('unlockBtn');
+  if (!pin.trim()) return;
+  btn.disabled = true; btn.textContent = 'Checking…'; err.textContent = '';
+  try {
+    const data = await decrypt(pin);
+    if (document.getElementById('remember').checked) store.set('hq-pin', pin); else store.del('hq-pin');
+    show(data);
+  } catch(ex){ err.textContent = 'That code didn’t work. Try again!'; }
+  btn.disabled = false; btn.textContent = 'Kick off ⚽';
+});
+document.getElementById('lockBtn').onclick = () => { store.del('hq-pin'); document.getElementById('pin').value = ''; lock.classList.remove('hide'); };
+const saved = store.get('hq-pin');
+if (saved) decrypt(saved).then(show).catch(() => store.del('hq-pin'));
+})();
+</script>
+</body>
+</html>
