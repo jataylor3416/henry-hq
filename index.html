@@ -533,6 +533,16 @@ document.getElementById('addEvent').href = 'https://calendar.google.com/calendar
 /* ---------- swap request ---------- */
 const modal = document.getElementById('swapModal');
 let me = store.get('hq-me') || '';
+// texts/emails go straight to the other parent (numbers live inside the encrypted data)
+function other(){ return me === 'mom' ? 'dad' : me === 'dad' ? 'mom' : ''; }
+function smsHref(msg){ const c = (DATA.contacts||{})[other()]; return 'sms:' + (c && c.phone ? c.phone : '') + '?&body=' + encodeURIComponent(msg); }
+function mailHref(subj, msg){ const c = (DATA.contacts||{})[other()]; return 'mailto:' + (c && c.email ? encodeURIComponent(c.email) : '') + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(msg); }
+function sendLabels(smsId, mailId){
+  const o = other(), c = (DATA.contacts||{})[o] || {};
+  document.getElementById(smsId).textContent = o ? `Text ${NAME[o]}` : 'Text it';
+  document.getElementById(mailId).textContent = o ? `Email ${NAME[o]}` : 'Email it';
+  document.getElementById(mailId).style.display = (o && !c.email) ? 'none' : '';
+}
 function setMe(v){ me = v; store.set('hq-me', v); document.querySelectorAll('#meSeg button').forEach(b => b.classList.toggle('on', b.dataset.me === v)); updateSwap(); }
 document.querySelectorAll('#meSeg button').forEach(b => b.onclick = () => setMe(b.dataset.me));
 function updateSwap(){
@@ -548,8 +558,8 @@ function updateSwap(){
   };
   const msg = `Henry HQ swap request${me ? ' from ' + NAME[me] : ''}:\n${asks[what.value]}${why ? '\n' + why : ''}\n\nLet me know yes or no. Once we agree, the calendar gets updated.`;
   document.getElementById('swPreview').textContent = msg;
-  document.getElementById('swSms').href = 'sms:?&body=' + encodeURIComponent(msg);
-  document.getElementById('swMail').href = 'mailto:?subject=' + encodeURIComponent('Henry swap request: ' + range) + '&body=' + encodeURIComponent(msg);
+  document.getElementById('swSms').href = smsHref(msg); sendLabels('swSms','swMail');
+  document.getElementById('swMail').href = mailHref('Henry swap request: ' + range, msg);
 }
 ['swFrom','swTo','swWhat','swWhy'].forEach(id => document.getElementById(id).addEventListener('input', updateSwap));
 document.getElementById('openSwap').onclick = () => { if (me) setMe(me); updateSwap(); modal.classList.add('show'); };
@@ -590,8 +600,8 @@ function updateVote(){
   }
   const msg = `Henry HQ${me ? ' · from ' + NAME[me] : ''}\n${body}${note ? '\n' + note : ''}${vKind === 'yes' ? '\n\nOnce we both agree, it gets marked final on the calendar.' : '\n\nLet me know what you think.'}`;
   document.getElementById('vtPreview').textContent = msg;
-  document.getElementById('vtSms').href = 'sms:?&body=' + encodeURIComponent(msg);
-  document.getElementById('vtMail').href = 'mailto:?subject=' + encodeURIComponent('Henry schedule: ' + clean(vItem.title)) + '&body=' + encodeURIComponent(msg);
+  document.getElementById('vtSms').href = smsHref(msg); sendLabels('vtSms','vtMail');
+  document.getElementById('vtMail').href = mailHref('Henry schedule: ' + clean(vItem.title), msg);
 }
 ['vtFrom','vtTo','vtWho','vtNote'].forEach(id => document.getElementById(id).addEventListener('input', updateVote));
 document.getElementById('vtClose').onclick = () => vModal.classList.remove('show');
