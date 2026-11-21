@@ -6,6 +6,12 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0f3d2a">
 <title>Henry HQ</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Henry HQ">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
@@ -29,7 +35,7 @@ button{font:inherit;cursor:pointer}
 /* ---------- pitch header ---------- */
 .pitch{background:
   repeating-linear-gradient(90deg,var(--pitch) 0 70px,var(--pitch2) 70px 140px);
-  color:#fff;position:relative;overflow:hidden;padding:18px 0 90px}
+  color:#fff;position:relative;overflow:hidden;padding:max(18px,env(safe-area-inset-top)) 0 90px}
 .pitch:before{content:"";position:absolute;left:50%;top:-60px;width:260px;height:260px;border:3px solid var(--line);border-radius:50%;transform:translateX(-50%)}
 .pitch:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:3px solid var(--line)}
 .topbar{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
