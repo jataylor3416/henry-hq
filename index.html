@@ -82,7 +82,7 @@ section{margin:26px 0}
 .navbtn{width:40px;height:40px;border-radius:12px;border:0;background:#edf2ee;font-size:20px;font-weight:900;color:var(--ink)}
 .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .grid .h{font-size:11px;font-weight:900;color:var(--muted);text-align:center;text-transform:uppercase;padding:2px 0 4px}
-.cell{aspect-ratio:1/1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff;position:relative;border:0;padding:0}
+.cell{height:58px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff;position:relative;border:0;padding:0}
 .cell.mom{background:var(--mom)} .cell.dad{background:var(--dad)} .cell.none{background:#e9eeea;color:#9aa6a0}
 .cell.out{opacity:.28}
 .cell.pending{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.28) 0 6px,transparent 6px 12px)}
@@ -108,7 +108,7 @@ section{margin:26px 0}
 .ecard .when{font-weight:900;color:var(--c2);font-size:14px}
 .ecard .meta{font-size:13px;color:var(--muted);font-weight:700}
 .ecard .tag{align-self:flex-start;font-size:11px;font-weight:900;border-radius:6px;padding:2px 7px;background:#fff4d6;color:#8a6200}
-.empty{background:#fff;border:3px dashed #cfd9d2;border-radius:18px;padding:18px;color:var(--muted);font-weight:800;display:flex;gap:14px;align-items:center}
+.empty{grid-column:1/-1;background:#fff;border:3px dashed #cfd9d2;border-radius:18px;padding:18px;color:var(--muted);font-weight:800;display:flex;gap:14px;align-items:center}
 .empty svg{flex:none}
 
 /* actions */
@@ -166,7 +166,7 @@ textarea{min-height:70px;resize:vertical}
   .day{border-radius:12px;min-height:74px}
   .day .num{font-size:22px}
   .day .who{font-size:10px}
-  .cell{font-size:13px;border-radius:8px}
+  .cell{font-size:13px;border-radius:8px;height:auto;aspect-ratio:1/1}
 }
 @media (prefers-reduced-motion:reduce){.hero-critter{animation:none}}
 </style>
@@ -356,15 +356,21 @@ function renderToday(){
     if (!nb) break;
     if (nb.who !== b.who){ next = {d, b:nb}; break; }
   }
-  const nd = next ? daysBetween(now, next.d) : null;
-  const when = nd === 1 ? 'tomorrow' : `in ${nd} days`;
+  // a block titled like "(Dad picks up Wed night)" means the switch happens the evening before
+  if (next){
+    const prev = dayMap[iso(addDays(next.d,-1))];
+    const m = prev && /picks up (\w+) (night|evening|after school|afternoon)/i.exec(prev.title);
+    if (m) next.label = `${fmt(addDays(next.d,-1))} ${m[2].toLowerCase()}`;
+  }
+  const nd = next ? daysBetween(now, next.label ? addDays(next.d,-1) : next.d) : null;
+  const when = nd === 0 ? 'today' : nd === 1 ? 'tomorrow' : `in ${nd} days`;
   const special = b.special ? `<div class="note">📌 ${esc(b.title)}${b.pending ? ' · <b>proposed, not agreed yet</b>' : ''}</div>` : '';
   const nextNote = next && next.b.special ? ` · ${esc(next.b.title)}${next.b.pending?' (proposed)':''}` : '';
   el.className = 'today ' + b.who;
   el.innerHTML = `<div>
       <div class="kicker">${fmt(now,{weekday:'long', month:'long', day:'numeric'})}</div>
       <h2>Henry is with ${NAME[b.who]}</h2>
-      ${next ? `<div class="handoff">Next switch: <b>${fmt(next.d)}</b> <span class="pill ${next.b.who}">→ ${NAME[next.b.who]}</span> <span>${when}${nextNote}</span></div>` : ''}
+      ${next ? `<div class="handoff">Next switch: <b>${next.label || fmt(next.d)}</b> <span class="pill ${next.b.who}">→ ${NAME[next.b.who]}</span> <span>${when}${nextNote}</span></div>` : ''}
       ${special}
     </div>
     <div class="hero-critter">${critter('100%', b.who)}</div>`;
